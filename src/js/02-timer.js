@@ -16,22 +16,31 @@ function addZero(data) {
   return data;
 }
 
-let time = function(dataSeconds, dataMinutes, dataHours) {
+let time = function(data) {
 
   const currentDays = elementSet.daysElement
   const currentHourse = elementSet.hoursElement;
   const currentMinutes = elementSet.minutesElement;
   const currentSeconds = elementSet.secondsElement;
 
-  let countSeconds = new Date().getSeconds();
-  let countMinutes = new Date().getMinutes();
-  let countHours = new Date().getHours();
+  let diffDate = Date.parse(data) - Date.parse(new Date());
 
-  currentHourse.textContent = 23 - (countHours - dataHours);
-  currentMinutes.textContent = 59 - (countMinutes - dataMinutes);
-  currentSeconds.textContent = 59 - (Math.abs(dataSeconds - countSeconds));
+  let seconds = Math.abs(Math.floor(diffDate / 1000) % 60);
+  let minutes = Math.abs(Math.floor(diffDate / 1000 / 60) % 60); 
+  let hours = Math.abs(Math.floor((diffDate / 1000 / 60 / 60) % 24));  
+  let days = Math.abs(Math.floor(diffDate / 1000 / 60 / 60 / 24));  
 
-  console.log(`${23 - (countHours - dataHours)} : ${59 - (countMinutes - dataMinutes)} : ${59 - (countSeconds - dataSeconds)}`);
+  currentDays.textContent = days < 10 ? "0" + days : days;
+  currentHourse.textContent = hours < 10 ? "0" + hours : hours;
+  currentMinutes.textContent = minutes < 10 ? "0" + minutes : minutes;
+  currentSeconds.textContent = seconds < 10 ? "0" + seconds : seconds;
+
+  console.log(Math.abs(days), Math.abs(hours), Math.abs(minutes), Math.abs(seconds));
+  // currentHourse.textContent = 23 - (countHours - dataHours);
+  // currentMinutes.textContent = 59 - (countMinutes - dataMinutes);
+  // currentSeconds.textContent = 59 - (Math.abs(dataSeconds - countSeconds));
+
+  // console.log(`${23 - (countHours - dataHours)} : ${59 - (countMinutes - dataMinutes)} : ${59 - (countSeconds - dataSeconds)}`);
 
   // if(currentDays.textContent === "00") {
   //   currentDays.textContent = ((options.defaultDate.getDate().toString() - data.split("-")[2].split(" ")[0]) - 1);
@@ -65,11 +74,11 @@ const options = {
     defaultDate: new Date(),
     minuteIncrement: 1,
     onClose: function onClose(selectedDates) {
-      console.log(selectedDates);
-      const NEW_SECONDS = new Date().getSeconds();
-      const NEW_MINUTES = new Date().getMinutes();
-      const NEW_HOURS = new Date().getHours();
-      setInterval(time, 1000, NEW_SECONDS, NEW_MINUTES, NEW_HOURS);
+      console.log(Date.parse(selectedDates));
+      // const NEW_SECONDS = new Date().getSeconds();
+      // const NEW_MINUTES = new Date().getMinutes();
+      // const NEW_HOURS = new Date().getHours();
+      setInterval(time, 1000, selectedDates);
     },
   };
 
