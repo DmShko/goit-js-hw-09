@@ -1,5 +1,6 @@
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
+import Notiflix from 'notiflix';
 
 const elementSet = {
   daysElement: document.querySelector('[data-days]'),
@@ -75,8 +76,13 @@ const options = {
   onClose: function onClose(selectedDates) {
 
     if(Date.parse(selectedDates) - Date.parse(new Date()) > 0) {
+      
       elementSet.buttonElement.disabled = false;
       selectDateVar = selectedDates;
+      
+    } else {
+      Notiflix.Notify.warning('Please choose a date in the future');
+
     }
   },
 };
