@@ -2,90 +2,86 @@ import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 
 const elementSet = {
-    daysElement: document.querySelector('[data-days]'),
-    hoursElement: document.querySelector('[data-hours]'),
-    minutesElement: document.querySelector('[data-minutes]'),
-    secondsElement: document.querySelector('[data-seconds]'),
-    inputElement: document.querySelector("#datetime-picker"),
+  daysElement: document.querySelector('[data-days]'),
+  hoursElement: document.querySelector('[data-hours]'),
+  minutesElement: document.querySelector('[data-minutes]'),
+  secondsElement: document.querySelector('[data-seconds]'),
+  inputElement: document.querySelector("#datetime-picker"),
+  buttonElement: document.querySelector('[data-start]'),
 };
 
-function addZero(data) {
-  if(data.length === 1) {
-    return "0" + data;
-  }
-  return data;
+
+let selectDateVar= null;
+elementSet.buttonElement.disabled = true;
+
+
+function convertMs(ms) {
+  // Number of milliseconds per unit of time
+  const second = 1000;
+  const minute = second * 60;
+  const hour = minute * 60;
+  const day = hour * 24;
+
+  // Remaining days
+  const days = Math.floor(ms / day);
+  // Remaining hours
+  const hours = Math.floor((ms % day) / hour);
+  // Remaining minutes
+  const minutes = Math.floor(((ms % day) % hour) / minute);
+  // Remaining seconds
+  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+
+  return { days, hours, minutes, seconds };
 }
 
-let time = function(data) {
+// add "0", if data length - "1"
+function addLeadingZero(value) {
 
-  const currentDays = elementSet.daysElement
-  const currentHourse = elementSet.hoursElement;
-  const currentMinutes = elementSet.minutesElement;
-  const currentSeconds = elementSet.secondsElement;
+  return value.toString().padStart(2, 0);
+}
 
-  let diffDate = Date.parse(data) - Date.parse(new Date());
+const start = function () {
 
-  let seconds = Math.abs(Math.floor(diffDate / 1000) % 60);
-  let minutes = Math.abs(Math.floor(diffDate / 1000 / 60) % 60); 
-  let hours = Math.abs(Math.floor((diffDate / 1000 / 60 / 60) % 24));  
-  let days = Math.abs(Math.floor(diffDate / 1000 / 60 / 60 / 24));  
-
-  currentDays.textContent = days < 10 ? "0" + days : days;
-  currentHourse.textContent = hours < 10 ? "0" + hours : hours;
-  currentMinutes.textContent = minutes < 10 ? "0" + minutes : minutes;
-  currentSeconds.textContent = seconds < 10 ? "0" + seconds : seconds;
-
-  console.log(Math.abs(days), Math.abs(hours), Math.abs(minutes), Math.abs(seconds));
-  // currentHourse.textContent = 23 - (countHours - dataHours);
-  // currentMinutes.textContent = 59 - (countMinutes - dataMinutes);
-  // currentSeconds.textContent = 59 - (Math.abs(dataSeconds - countSeconds));
-
-  // console.log(`${23 - (countHours - dataHours)} : ${59 - (countMinutes - dataMinutes)} : ${59 - (countSeconds - dataSeconds)}`);
-
-  // if(currentDays.textContent === "00") {
-  //   currentDays.textContent = ((options.defaultDate.getDate().toString() - data.split("-")[2].split(" ")[0]) - 1);
-  // } 
-
-  // if(currentHourse.textContent === "00") {
-  //   currentHourse.textContent = (options.defaultDate.getDate().toString() - data.split("-")[2].split(" ")[0]) * 24;
-  // } 
-  
-  // if(currentMinutes.textContent === "00") {
-  //   currentMinutes.textContent = "03";
+  // make setInterval
+  let int = setInterval(() => {
     
-  // } else {
-  //   currentMinutes.textContent = addZero(currentMinutes.textContent);
-  // }
+    // calculate the difference select and current dates
+    let diffDate = Math.abs(Date.parse(selectDateVar) - Date.parse(new Date()));
+  
+    // reset timer
+    if(diffDate === Date.parse(new Date())) {
+      clearInterval(int);
+      elementSet.buttonElement.disabled = true;
+    }
 
-  // if(currentSeconds.textContent === "00") {
-  //   currentSeconds.textContent = "03";
-  //   currentMinutes.textContent -= 1
-  //   currentMinutes.textContent = addZero(currentMinutes.textContent);
-  // } else {
-  //   currentSeconds.textContent -= 1;
-  //   currentSeconds.textContent = addZero(currentSeconds.textContent);
-  // }
+    // get the cell of date
+    let convertResult = convertMs(diffDate);
 
-}
+    // out result 
+    elementSet.daysElement.textContent = convertResult.days < 10 ? addLeadingZero(convertResult.days) : convertResult.days;
+    elementSet.hoursElement.textContent = convertResult.hours < 10 ? addLeadingZero(convertResult.hours) : convertResult.hours;
+    elementSet.minutesElement.textContent = convertResult.minutes < 10 ? convaddLeadingZeroertMs(convertResult.minutes) : convertResult.minutes;
+    elementSet.secondsElement.textContent = convertResult.seconds < 10 ? addLeadingZero(convertResult.seconds) : convertResult.seconds;
+
+    
+  }, 1000)
+};
 
 const options = {
-    enableTime: true,
-    time_24hr: true,
-    defaultDate: new Date(),
-    minuteIncrement: 1,
-    onClose: function onClose(selectedDates) {
-      console.log(Date.parse(selectedDates));
-      // const NEW_SECONDS = new Date().getSeconds();
-      // const NEW_MINUTES = new Date().getMinutes();
-      // const NEW_HOURS = new Date().getHours();
-      setInterval(time, 1000, selectedDates);
-    },
-  };
+  enableTime: true,
+  time_24hr: true,
+  defaultDate: new Date(),
+  minuteIncrement: 1,
+  onClose: function onClose(selectedDates) {
 
+    if(Date.parse(selectedDates) - Date.parse(new Date()) > 0) {
+      elementSet.buttonElement.disabled = false;
+      selectDateVar = selectedDates;
+    }
+  },
+};
 
-const calendar = flatpickr(elementSet.inputElement, options);
+flatpickr(elementSet.inputElement, options);
 
-// elementSet.hoursElement.textContent = calendar[0];
-
-// console.log(options.defaultDate.getDate().toString());
-// console.log();
+// add button's event
+elementSet.buttonElement.addEventListener('click', start);
