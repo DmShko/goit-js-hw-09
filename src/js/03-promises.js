@@ -11,50 +11,63 @@ const elementSet = {
 
 const inputEvent = function(evt) {
 
-  const { elements: { step , delay, amount} } = elementSet.fatherElement;
+  evt.preventDefault();
 
-  if(evt.target.getAttribute("name") === 'step') {
-    createPromise(step.value , delay.value, amount.value);
+  const { elements: { step , delay, amount } } = elementSet.fatherElement;
+
+  if(evt.target.getAttribute("type") === 'submit') {
+    
+    for(let i=0; i < currentAmount; i += 1) {
+      currentDelay += currentStep;
+      createPromise(currentDelay, i + 1)
+      .then(({ position, delay }) => {
+        Notiflix.Notify.success(`Fulfilled promise ${position} in ${delay} ms`, {
+          timeout: 10000,
+        },);
+      })
+      .catch(({ position, delay }) => {
+        Notiflix.Notify.warning(`Rejected  promise ${position} in ${delay} ms`,
+        {
+          timeout: 10000,
+        },);
+      });
+
+    }
+
   } 
-  if(evt.target.getAttribute("name") === 'delay'){
-    createPromise(step.value , delay.value, amount.value);
+
+  if(evt.target.getAttribute("name") === 'delay') {
+    currentDelay = Number(delay.value);
   }
+
+  if(evt.target.getAttribute("name") === 'step'){
+    currentStep = Number(step.value);
+  }
+
   if(evt.target.getAttribute("name") === 'amount'){
-    createPromise(step.value , delay.value, amount.value);
+    currentAmount = Number(amount.value);
   }
+
 };
 
-elementSet.fatherElement.addEventListener('input', debounce._.debounce(inputEvent, 500, {trailing: true}))
+elementSet.fatherElement.addEventListener('input', debounce._.debounce(inputEvent, 500, {trailing: true}));
+elementSet.fatherElement.addEventListener('click', inputEvent);
 
-function createPromise(position, delay, amount) {
-  console.log(position, delay, amount);
-  let promSet = [];
-
-  const shouldResolve = Math.random() > 0.3;
+function createPromise(delay, position) {
   
-  for(let i=0; i < amount; i += 1) {
-    promSet.push(new Promise((resolve, reject) => {
+  const shouldResolve = Math.random() > 0.3;
+
+   return new Promise((resolve, reject) => {
       setTimeout(()=> {
         if (shouldResolve) {
           // Fulfill
-          resolve(`Fulfilled promise ${position} in ${delay} ms`);
+          resolve({position, delay});
         } else {
           // Reject
-          reject(`Rejected promise ${position} in ${delay} ms`);
+          reject({position, delay});
         }
       }, delay)
       
-    }));
-  }
+    });
   
-  console.log(promSet);
-
-  promSet[0].then(result => {
-    console.log(result);
-  }
-  ).catch(error => {
-    console.log(error)
-  });
-    
 }
-
