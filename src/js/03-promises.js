@@ -17,23 +17,23 @@ const inputEvent = function(evt) {
 
   if(evt.target.getAttribute("type") === 'submit') {
     
-    for(let i=0; i < currentAmount; i += 1) {
-      currentDelay += currentStep;
-      createPromise(currentDelay, i + 1)
-      .then(({ position, delay }) => {
-        Notiflix.Notify.success(`Fulfilled promise ${position} in ${delay} ms`, {
-          timeout: 10000,
-        },);
-      })
-      .catch(({ position, delay }) => {
-        Notiflix.Notify.warning(`Rejected  promise ${position} in ${delay} ms`,
-        {
-          timeout: 10000,
-        },);
-      });
-
+    if(step !== "" || delay !== "" || amount !== "") {
+      for(let i=0; i < currentAmount; i += 1) {
+        currentDelay += currentStep;
+        createPromise(currentDelay, i + 1)
+        .then(({ position, delay }) => {
+          Notiflix.Notify.success(`Fulfilled promise ${position} in ${delay} ms`, {
+            timeout: 10000,
+          },);
+        })
+        .catch(({ position, delay }) => {
+          Notiflix.Notify.warning(`Rejected  promise ${position} in ${delay} ms`,
+          {
+            timeout: 10000,
+          },);
+        });
+      }
     }
-
   } 
 
   if(evt.target.getAttribute("name") === 'delay') {
