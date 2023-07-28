@@ -26,14 +26,14 @@ const buttonEvent = function(evt) {
         elementLink.startButton.disabled = true;
         elementLink.stopButton.disabled = false;
         // set interval
-        varOfTime = setInterval(() => {
+        elementLink.varOfTime = setInterval(() => {
             document.body.style.backgroundColor = `${getRandomHexColor()}`;
         }, 1000)
         return;
     }
 
     // clear interval, when the STOP button is pressed
-    clearInterval(varOfTime);
+    clearInterval(elementLink.varOfTime);
     initPage();
 }
 
