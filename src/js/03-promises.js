@@ -8,6 +8,9 @@ const elementSet = {
   imputStepElement: document.querySelector('[name="step"]'),
   imputAmountElement: document.querySelector('[name="amount"]'),
   imputSubmitElement: document.querySelector("button"),
+  currentDelay: null,
+  currentStep: null,
+  currentAmount: null,
 };
 
 // disable button
@@ -30,10 +33,10 @@ const inputEvent = function(evt) {
   // if button is pressed
   if(evt.target.getAttribute("type") === 'submit') {
     
-    for(let i=0; i < currentAmount; i += 1) {
-      currentDelay += currentStep;
+    for(let i=0; i < elementSet.currentAmount; i += 1) {
+      elementSet.currentDelay += elementSet.currentStep;
       //promises enable
-      createPromise(currentDelay, i + 1)
+      createPromise(elementSet.currentDelay, i + 1)
       .then(({ position, delay }) => {
         Notiflix.Notify.success(`Fulfilled promise ${position} in ${delay} ms`, {
           timeout: 10000,
@@ -50,17 +53,17 @@ const inputEvent = function(evt) {
 
   // input 'delay' event
   if(evt.target.getAttribute("name") === 'delay') {
-    currentDelay = Number(delay.value);
+    elementSet.currentDelay = Number(delay.value);
   }
 
   // input 'step' event
   if(evt.target.getAttribute("name") === 'step'){
-    currentStep = Number(step.value);
+    elementSet.currentStep = Number(step.value);
   }
 
   // input 'amount' event
   if(evt.target.getAttribute("name") === 'amount'){
-    currentAmount = Number(amount.value);
+    elementSet.currentAmount = Number(amount.value);
   }
 
 };
