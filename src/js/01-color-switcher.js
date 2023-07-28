@@ -7,7 +7,7 @@ function getRandomHexColor() {
 const elementLink = {
     startButton: document.querySelector('[data-start]'),
     stopButton: document.querySelector('[data-stop]'),
-    varOfTime: changeColor = null,
+    varOfTime: null,
 }
 
 // first start element state function
