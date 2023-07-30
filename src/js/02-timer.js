@@ -61,7 +61,7 @@ const start = function () {
     // out result 
     elementSet.daysElement.textContent = convertResult.days < 10 ? addLeadingZero(convertResult.days) : convertResult.days;
     elementSet.hoursElement.textContent = convertResult.hours < 10 ? addLeadingZero(convertResult.hours) : convertResult.hours;
-    elementSet.minutesElement.textContent = convertResult.minutes < 10 ? convaddLeadingZeroertMs(convertResult.minutes) : convertResult.minutes;
+    elementSet.minutesElement.textContent = convertResult.minutes < 10 ? addLeadingZero(convertResult.minutes) : convertResult.minutes;
     elementSet.secondsElement.textContent = convertResult.seconds < 10 ? addLeadingZero(convertResult.seconds) : convertResult.seconds;
 
     
@@ -74,9 +74,10 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose: function onClose(selectedDates) {
-
+    
     if(Date.parse(selectedDates) - Date.parse(new Date()) > 0) {
       
+      elementSet.inputElement.disabled = true;
       elementSet.buttonElement.disabled = false;
       selectDateVar = selectedDates;
       

@@ -25,45 +25,57 @@ const inputEvent = function(evt) {
   const { elements: { step , delay, amount } } = elementSet.fatherElement;
 
   // if fields is not empty then button disable is 'false'
-  if(step.value !== "" && delay.value !== "" && amount.value !== "") {
+  if(step.value > 0 && delay.value > 0 && amount.value >= 0) {
     
     elementSet.imputSubmitElement.disabled = false;
+  } else {
+    elementSet.imputSubmitElement.disabled = true;
   }
 
   // if button is pressed
   if(evt.target.getAttribute("type") === 'submit') {
     
-    for(let i=0; i < elementSet.currentAmount; i += 1) {
-      elementSet.currentDelay += elementSet.currentStep;
+    for(let i=0; i <= (elementSet.currentAmount && (elementSet.currentAmount - 1)); i += 1) {
+      console.log(i);
+      elementSet.currentDelay += i && elementSet.currentStep;
       //promises enable
       createPromise(elementSet.currentDelay, i + 1)
       .then(({ position, delay }) => {
         Notiflix.Notify.success(`Fulfilled promise ${position} in ${delay} ms`, {
-          timeout: 10000,
+          timeout: 5000,
         },);
       })
       .catch(({ position, delay }) => {
         Notiflix.Notify.warning(`Rejected  promise ${position} in ${delay} ms`,
         {
-          timeout: 10000,
+          timeout: 5000,
         },);
       });
     }
+
+    // to start over, when user click again
+    getInputs();
+  }
+
+  function getInputs() {
+    elementSet.currentDelay = Number(delay.value);
+    elementSet.currentStep = Number(step.value);
+    elementSet.currentAmount = Number(amount.value);
   }
 
   // input 'delay' event
   if(evt.target.getAttribute("name") === 'delay') {
-    elementSet.currentDelay = Number(delay.value);
+    getInputs();
   }
 
   // input 'step' event
   if(evt.target.getAttribute("name") === 'step'){
-    elementSet.currentStep = Number(step.value);
+    getInputs();
   }
 
   // input 'amount' event
   if(evt.target.getAttribute("name") === 'amount'){
-    elementSet.currentAmount = Number(amount.value);
+    getInputs();
   }
 
 };
