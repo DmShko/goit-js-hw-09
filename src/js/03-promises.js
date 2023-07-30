@@ -36,7 +36,6 @@ const inputEvent = function(evt) {
   if(evt.target.getAttribute("type") === 'submit') {
     
     for(let i=0; i <= (elementSet.currentAmount && (elementSet.currentAmount - 1)); i += 1) {
-      console.log(i);
       elementSet.currentDelay += i && elementSet.currentStep;
       //promises enable
       createPromise(elementSet.currentDelay, i + 1)
