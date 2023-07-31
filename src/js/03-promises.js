@@ -28,8 +28,16 @@ const inputEvent = function(evt) {
   if(step.value > 0 && delay.value > 0 && amount.value >= 0) {
     
     elementSet.imputSubmitElement.disabled = false;
+
   } else {
-    elementSet.imputSubmitElement.disabled = true;
+    if(evt.type !== 'click') {
+      elementSet.imputSubmitElement.disabled = true;
+      if(step.value < 0 || delay.value < 0 || amount.value < 0)
+        Notiflix.Notify.info("The value of all fields must be positive!",
+        {
+    width: '360px',
+  },);
+    } 
   }
 
   // if button is pressed
@@ -42,13 +50,17 @@ const inputEvent = function(evt) {
       .then(({ position, delay }) => {
         Notiflix.Notify.success(`Fulfilled promise ${position} in ${delay} ms`, {
           timeout: 5000,
-        },);
+          width: '360px',
+        }, 
+        );
       })
       .catch(({ position, delay }) => {
         Notiflix.Notify.warning(`Rejected  promise ${position} in ${delay} ms`,
         {
           timeout: 5000,
-        },);
+          width: '360px',
+        },
+       );
       });
     }
 
